@@ -1,0 +1,55 @@
+name: Deploy Static Website to GitHub Pages
+
+on:
+  push:
+    branches: [ "main" ] # যদি আপনার ডিফল্ট ব্রাঞ্চ master হয়, তবে এখানে master লিখে দেবেন
+
+# গিটহাব পেজে ডিপ্লয় করার জন্য প্রয়োজনীয় পারমিশন
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# একসাথে একাধিক ডিপ্লয়মেন্ট এড়াতে কনকারেন্সি সেটআপ
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist' # Vite প্রজেক্টের বিল্ড ফোল্ডার
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.github-pages-url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        
