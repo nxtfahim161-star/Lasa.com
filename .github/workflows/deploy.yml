@@ -2,15 +2,13 @@ name: Deploy Static Website to GitHub Pages
 
 on:
   push:
-    branches: [ "main" ] # যদি আপনার ডিফল্ট ব্রাঞ্চ master হয়, তবে এখানে master লিখে দেবেন
+    branches: [ "main" ]
 
-# গিটহাব পেজে ডিপ্লয় করার জন্য প্রয়োজনীয় পারমিশন
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# একসাথে একাধিক ডিপ্লয়মেন্ট এড়াতে কনকারেন্সি সেটআপ
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -26,7 +24,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
@@ -40,7 +37,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist' # Vite প্রজেক্টের বিল্ড ফোল্ডার
+          path: './dist'
 
   deploy:
     environment:
