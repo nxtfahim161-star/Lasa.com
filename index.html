@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solma AI Dashboard - lasa.com</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    
+    <!-- Framer Motion CDN -->
+    <script src="https://unpkg.com/framer-motion@10.16.5/dist/framer-motion.js"></script>
+    
+    <!-- Babel for JSX Compilation in Browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased overflow-x-hidden">
+    
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { motion } = Motion;
+
+        // ১. ৩ডি লিফ লোডার ও lasa.com ব্র্যান্ডিং কম্পোনেন্ট
+        function Loader({ onComplete }) {
+            const [progress, setProgress] = useState(0);
+
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    setProgress((prev) => {
+                        if (prev >= 100) {
+                            clearInterval(timer);
+                            setTimeout(onComplete, 500);
+                            return 100;
+                        }
+                        return prev + 2;
+                    });
+                }, 40);
+                return () => clearInterval(timer);
+            }, [onComplete]);
+
+            return (
+                <motion.div
+                    exit={{ opacity: 0, transition: { duration: 0.8, ease: 'easeInOut' } }}
+                    className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#eef5f0]"
+                >
+                    {/* 3D Leaf Animation */}
+                    <motion.div
+                        animate={{
+                            rotateY: [0, 15, -15, 0],
+                            rotateZ: [-5, 5, -5],
+                            y: [-10, 10, -10]
+                        }}
+                        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                        className="w-24 h-24 mb-8 flex items-center justify-center"
+                    >
+                        <svg viewBox="0 0 100 100" className="w-full h-full text-emerald-600 fill-current">
+                            <path d="M50,5 C20,25 10,60 50,95 C90,60 80,25 50,5 Z M50,20 L50,80 M50,40 L30,30 M50,55 L70,45 M50,70 L35,62" 
+                                  stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="none"/>
+                        </svg>
+                    </motion.div>
+
+                    {/* Progress Bar */}
+                    <div className="w-64 h-1.5 bg-emerald-100 rounded-full overflow-hidden shadow-inner mb-4">
+                        <motion.div
+                            className="h-full bg-emerald-600 rounded-full"
+                            style={{ width: `${progress}%` }}
+                        />
+                    </div>
+
+                    {/* Brand Name */}
+                    <p className="text-xs tracking-widest text-emerald-800/60 font-medium uppercase">
+                        lasa.com
+                    </p>
+                </motion.div>
+            );
+        }
+
+        // ২. হিরো সেকশন ও অরবিটাল মোশন কম্পোনেন্ট
+        function HeroSection() {
+            return (
+                <section className="relative w-full h-screen overflow-hidden bg-gradient-to-b from-[#bde0fe] via-[#e2eafc] to-[#d8f3dc] flex flex-col justify-between p-6 md:p-8">
+                    {/* Navbar */}
+                    <nav className="flex justify-between items-center z-20 max-w-7xl mx-auto w-full">
+                        <div className="text-2xl font-bold text-slate-800">Solma</div>
+                        <div className="hidden md:flex gap-6 bg-white/40 backdrop-blur-md px-6 py-2 rounded-full border border-white/50 text-sm font-medium text-slate-700">
+                            <a href="#" className="bg-emerald-700 text-white px-4 py-1 rounded-full">Home</a>
+                            <a href="#" className="py-1">Testimonial</a>
+                            <a href="#" className="py-1">Features</a>
+                            <a href="#" className="py-1">About Us</a>
+                        </div>
+                        <button className="bg-white/80 backdrop-blur-md text-slate-800 px-5 py-2 rounded-full border border-white font-medium text-sm">
+                            Log In ↗
+                        </button>
+                    </nav>
+
+                    {/* Title */}
+                    <div className="text-center z-10 my-2">
+                        <h1 className="text-3xl md:text-5xl font-extrabold text-slate-800 tracking-tight">
+                            Mental Health redefined<br />Completely anonymous.
+                        </h1>
+                        <p className="text-sm text-slate-600 mt-2 max-w-xl mx-auto">
+                            From first steps to ongoing care, Solma offers safe, evidence-based support.
+                        </p>
+                    </div>
+
+                    {/* Central Subject & Orbital Cards */}
+                    <div className="relative flex-1 flex items-center justify-center">
+                        <div className="relative z-10 w-60 h-60 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-white/60 shadow-2xl">
+                            <img 
+                                src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800" 
+                                alt="Central Subject" 
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+
+                        {/* Circular Orbit Path */}
+                        <motion.div 
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                            className="absolute w-[420px] md:w-[550px] h-[420px] md:h-[550px] rounded-full border border-dashed border-white/40 flex items-center justify-center pointer-events-none"
+                        >
+                            <motion.div animate={{ rotate: -360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }} className="absolute -top-6 bg-white/40 backdrop-blur-xl border border-white/60 p-4 rounded-2xl shadow-lg text-slate-800 w-40 md:w-44">
+                                <p className="text-xs font-semibold text-slate-600">Daily Journal</p>
+                                <p className="text-lg font-bold">87 / Month</p>
+                            </motion.div>
+
+                            <motion.div animate={{ rotate: -360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }} className="absolute -bottom-6 bg-white/40 backdrop-blur-xl border border-white/60 p-4 rounded-2xl shadow-lg text-slate-800 w-40 md:w-44">
+                                <p className="text-xs font-semibold text-slate-600">Satisfaction</p>
+                                <p className="text-2xl font-black text-emerald-700">89%</p>
+                            </motion.div>
+
+                            <motion.div animate={{ rotate: -360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }} className="absolute -right-6 md:-right-10 bg-white/40 backdrop-blur-xl border border-white/60 p-4 rounded-2xl shadow-lg text-slate-800 w-40 md:w-44">
+                                <p className="text-xs font-semibold text-slate-600">Session time</p>
+                                <p className="text-lg font-bold">72h</p>
+                            </motion.div>
+
+                            <motion.div animate={{ rotate: -360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }} className="absolute -left-6 md:-left-10 bg-white/40 backdrop-blur-xl border border-white/60 p-4 rounded-2xl shadow-lg text-slate-800 w-44 md:w-48">
+                                <p className="text-xs font-semibold text-slate-600">Community</p>
+                                <p className="text-lg font-bold">9.45M Users</p>
+                            </motion.div>
+                        </motion.div>
+                    </div>
+                </section>
+            );
+        }
+
+        // ৩. ড্যাশবোর্ড ও উইন্ড-ফ্লো অ্যানিমেশন কম্পোনেন্ট
+        function DashboardSection() {
+            return (
+                <section className="w-full min-h-screen bg-gradient-to-b from-[#d8f3dc] to-[#e8f5e9] p-6 md:p-12 flex items-center justify-center">
+                    <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-6 md:p-8 max-w-6xl w-full border border-white/80 shadow-2xl grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        {/* AI Journal */}
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-sm font-semibold text-emerald-800">Don't worry 🌿</h3>
+                                <h2 className="text-2xl font-bold text-slate-800">AI Journal is listening...</h2>
+                            </div>
+                            <div className="bg-emerald-900 text-white p-6 rounded-2xl shadow-md">
+                                <p className="text-xs opacity-75">Solma AI Journal</p>
+                                <p className="text-sm font-medium mt-1">Listening your story...</p>
+                                <div className="flex items-center gap-1 my-6 h-8">
+                                    {[40, 70, 30, 90, 60, 100, 50, 80, 40, 60, 90, 30].map((h, i) => (
+                                        <motion.div
+                                            key={i}
+                                            animate={{ height: [`${h}%`, `${100 - h}%`, `${h}%`] }}
+                                            transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.1 }}
+                                            className="flex-1 bg-emerald-400 rounded-full"
+                                        />
+                                    ))}
+                                </div>
+                                <p className="text-xs text-right opacity-70">00:34</p>
+                            </div>
+                        </div>
+
+                        {/* Mood Tracker */}
+                        <div className="space-y-6">
+                            <div className="bg-white/80 p-6 rounded-2xl border border-white shadow-sm">
+                                <h4 className="text-sm font-bold text-slate-700">Mood Tracker</h4>
+                                <p className="text-3xl font-black text-emerald-600 my-2">75%</p>
+                                <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                                    <div className="bg-emerald-500 h-full w-[75%]" />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Available Therapist (Wind Hair Motion) */}
+                        <div className="bg-white/80 p-6 rounded-2xl border border-white shadow-sm flex flex-col justify-between">
+                            <div>
+                                <span className="text-xs font-bold text-slate-400">Available Therapist</span>
+                                <h4 className="text-lg font-bold text-slate-800">Valawe Vakasena</h4>
+                            </div>
+                            <div className="relative my-4 overflow-hidden rounded-xl h-48">
+                                <motion.img 
+                                    animate={{ scale: [1, 1.02, 1], rotate: [0, 0.5, -0.5, 0] }}
+                                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                    src="https://images.unsplash.com/photo-1594824813566-78a95357345f?auto=format&fit=crop&q=80&w=600" 
+                                    alt="Dr. Valawe" 
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            <button className="w-full bg-slate-900 text-white py-3 rounded-xl font-medium text-sm hover:bg-slate-800">
+                                Booking Session ✓
+                            </button>
+                        </div>
+
+                    </div>
+                </section>
+            );
+        }
+
+        // ৪. মূল অ্যাপ ও অটো-স্ক্রল লজিক
+        function App() {
+            const [loading, setLoading] = useState(true);
+
+            useEffect(() => {
+                if (!loading) {
+                    const timer = setTimeout(() => {
+                        window.scrollTo({
+                            top: window.innerHeight,
+                            behavior: 'smooth'
+                        });
+                    }, 3000); // ৩ সেকেন্ড পর অটো স্ক্রল হবে
+                    return () => clearTimeout(timer);
+                }
+            }, [loading]);
+
+            return (
+                <main>
+                    {loading && <Loader onComplete={() => setLoading(false)} />}
+                    <HeroSection />
+                    <DashboardSection />
+                </main>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+  </html>
+  
